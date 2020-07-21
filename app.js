@@ -136,6 +136,7 @@ function addRole() {
                     {
                         title: answer.roleTitle,
                         salary: answer.roleSalary,
+                        department: answer.roleDepartment
                     },
                     (err) => {
                         if (err) throw err;
@@ -148,136 +149,136 @@ function addRole() {
             })
     });
 
+}
+function addEmployee() {
+    connection.query("SELECT title FROM role", function (err, res) {
+        if (err) throw err;
+        console.log(res);
 
-    function addEmployee() {
-        connection.query("SELECT title FROM role", function (err, res) {
-            if (err) throw err;
-            console.log(res);
-
-            inquirer
-                .prompt([
-                    {
-                        type: "input",
-                        message: "What is the employee's first name?",
-                        name: "firstName"
-                    },
-                    {
-                        type: "input",
-                        message: "What the employee's last name?",
-                        name: "lastName"
-                    },
-                    {
-                        type: "input",
-                        message: "What is the employee's unique five digit ID number?",
-                        name: "id"
-                    },
-                    {
-                        type: "rawlist",
-                        message: "What is the employee's role?",
-                        name: "employeerole",
-                        choices: function () {
-                            var choiceArray = [];
-                            for (var i = 0; i < res.length; i++) {
-                                choiceArray.push(res[i].title);
-                            }
-                            return choiceArray;
+        inquirer
+            .prompt([
+                {
+                    type: "input",
+                    message: "What is the employee's first name?",
+                    name: "firstName"
+                },
+                {
+                    type: "input",
+                    message: "What the employee's last name?",
+                    name: "lastName"
+                },
+                {
+                    type: "input",
+                    message: "What is the employee's unique five digit ID number?",
+                    name: "id"
+                },
+                {
+                    type: "rawlist",
+                    message: "What is the employee's role?",
+                    name: "employeerole",
+                    choices: function () {
+                        var choiceArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            choiceArray.push(res[i].title);
                         }
-
+                        return choiceArray;
                     }
 
-                ]).then(answer => {
-                    connection.query(
-                        "INSERT INTO employee SET ?",
+                }
+
+            ]).then(answer => {
+                connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                        first_name: answer.firstName,
+                        Last_name: answer.lastName,
+                        employee_id: answer.id
+
+                    },
+                    (err) => {
+                        if (err) throw err;
+
+                        console.log("\n" + answer.firstName + " has been added as an employee!")
+
+                    }
+                );
+                start();
+            })
+    });
+
+}
+    function viewDepartments() {
+        connection.query("SELECT department_name FROM department", function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+    }
+
+    function viewRoles() {
+        connection.query("SELECT title, salary, department FROM role", function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+    }
+
+    function viewEmployees() {
+        connection.query("SELECT employee_id, first_name, last_name FROM employee", function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+    }
+
+    function updateEmployeeRole() {
+        connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
+            console.log(res);
+            connection.query("SELECT title, role_id FROM role", function (err, resRole) {
+                inquirer.
+                    prompt([
                         {
-                            first_name: answer.firstName,
-                            Last_name: answer.lastName,
-                            employee_id: answer.id
+                            type: "rawlist",
+                            name: "employeeList",
+                            message: "Which employee would you like to update?",
+                            choices: function () {
+                                var choiceArray = [];
+                                for (var i = 0; i < res.length; i++) {
+                                    choiceArray.push(res[i].first_name);
+                                }
+                                return choiceArray;
+                            }
 
                         },
-                        (err) => {
-                            if (err) throw err;
-
-                            console.log("\n" + answer.firstName + " has been added as an employee!")
-
-                        }
-                    );
-                    start();
-                })
-        });
-
-
-        function viewDepartments() {
-            connection.query("SELECT department_name FROM department", function (err, res) {
-                if (err) throw err;
-                console.table(res);
-                start();
-            });
-        }
-
-        function viewRoles() {
-            connection.query("SELECT title, salary FROM role", function (err, res) {
-                if (err) throw err;
-                console.table(res);
-                start();
-            });
-        }
-
-        function viewEmployees() {
-            connection.query("SELECT employee_id, first_name, last_name FROM employee", function (err, res) {
-                if (err) throw err;
-                console.table(res);
-                start();
-            });
-        }
-
-        function updateEmployeeRole() {
-            connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
-                console.log(res);
-                connection.query("SELECT title, role_id FROM role", function (err, resRole) {
-                    inquirer.
-                        prompt([
-                            {
-                                type: "rawlist",
-                                name: "employeeList",
-                                message: "Which employee would you like to update?",
-                                choices: function () {
-                                    var choiceArray = [];
-                                    for (var i = 0; i < res.length; i++) {
-                                        choiceArray.push(res[i].first_name);
+                        {
+                            type: "rawlist",
+                            name: "employeeUpdateRole",
+                            message: "What is the employee's new role?",
+                            choices: function () {
+                                var choiceArray = [];
+                                console.log(resRole);
+                                for (var i = 0; i < resRole.length; i++) {
+                                    var role = {
+                                        name: resRole[i].title,
+                                        value: resRole[i].role_id
                                     }
-                                    return choiceArray;
-                                }
+                                    console.log(role);
+                                    choiceArray.push(role);
 
-                            },
-                            {
-                                type: "rawlist",
-                                name: "employeeUpdateRole",
-                                message: "What is the employee's new role?",
-                                choices: function () {
-                                    var choiceArray = [];
-                                    console.log(resRole);
-                                    for (var i = 0; i < resRole.length; i++) {
-                                        var role = {
-                                            name: resRole[i].title,
-                                            value: resRole[i].role_id
-                                        }
-                                        console.log(role);
-                                        choiceArray.push(role);
-
-                                    }
-                                    return choiceArray;
                                 }
+                                return choiceArray;
                             }
-                        ]).then(answer => {
-                            console.log(answer);
-                            connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [answer.employeeUpdateRole, answer.employeeList], function (err, res) {
-                                if (err) throw err;
-                                console.table(res);
-                                start();
-                            })
-
                         }
-                        )
-                })
-            });
+                    ]).then(answer => {
+                        console.log(answer);
+                        connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [answer.employeeUpdateRole, answer.employeeList], function (err, res) {
+                            if (err) throw err;
+                            console.table(res);
+                            start();
+                        })
 
+                    }
+                    )
+            })
+        });
+    }

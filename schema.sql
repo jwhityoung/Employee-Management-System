@@ -34,8 +34,14 @@ VALUES ("HR"),
 ("Legal");
 
 INSERT INTO role (title, salary, department, role_id)
-VALUES ("Account Executive", 65000.00, "Sales", NULL);
+VALUES ("Account Executive", 65000.00, "Sales", NULL),
+VALUES ("Implementation Manager", 70000.00, "Operations", NULL),
+VALUES ("HR Coordinator", 50000.00, "HR", NULL),
+VALUES ("Junior Software Developer", 75000.00, "Engineering", NULL);
 
 
 INSERT INTO employee (employee_id, first_name, last_name, role_id)
-VALUES (48937, "Olivia", "Gambucci", NULL);
+VALUES (48937, "Olivia", "Gambucci", NULL),
+VALUES (93827, "Will", "Williams", NULL),
+VALUES (28716, "Sara", "Smith", NULL),
+VALUES (73827, "Jane", "Doe", NULL);
