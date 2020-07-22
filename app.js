@@ -91,18 +91,20 @@ function addDepartment() {
                 },
                 (err) => {
                     if (err) throw err;
-                    console.log("\n" + "The department " + answer.departmentName + " has been added!")
+                    console.log("\n" + "The department " + answer.departmentName + " has been added!" + "\n")
                 }
             );
             start();
+          
         })
+     
 };
+
 
 //Add a new role
 function addRole() {
     connection.query("SELECT department_name FROM department", function (err, res) {
         if (err) throw err;
-        console.log(res);
 
         inquirer
             .prompt([
@@ -141,7 +143,7 @@ function addRole() {
                     (err) => {
                         if (err) throw err;
 
-                        console.log("\n" + "The role " + answer.roleTitle + "has been added!")
+                        console.log("\n" + "The role " + answer.roleTitle + "has been added!" + "\n")
 
                     }
                 );
@@ -153,7 +155,6 @@ function addRole() {
 function addEmployee() {
     connection.query("SELECT title FROM role", function (err, res) {
         if (err) throw err;
-        console.log(res);
 
         inquirer
             .prompt([
@@ -192,13 +193,13 @@ function addEmployee() {
                     {
                         first_name: answer.firstName,
                         Last_name: answer.lastName,
-                        employee_id: answer.id
-
+                        employee_id: answer.id,
+                        title: answer.employeerole
                     },
                     (err) => {
                         if (err) throw err;
 
-                        console.log("\n" + answer.firstName + " has been added as an employee!")
+                        console.log("\n" + answer.firstName + " has been added as an employee!" + "\n")
 
                     }
                 );
@@ -208,15 +209,16 @@ function addEmployee() {
 
 }
     function viewDepartments() {
-        connection.query("SELECT department_name FROM department", function (err, res) {
+        connection.query("SELECT department_name AS Departments FROM department", function (err, res) {
             if (err) throw err;
+            
             console.table(res);
             start();
         });
     }
 
     function viewRoles() {
-        connection.query("SELECT title, salary, department FROM role", function (err, res) {
+        connection.query("SELECT title AS Title, salary AS Salary, department AS Department FROM role", function (err, res) {
             if (err) throw err;
             console.table(res);
             start();
@@ -224,7 +226,7 @@ function addEmployee() {
     }
 
     function viewEmployees() {
-        connection.query("SELECT employee_id, first_name, last_name FROM employee", function (err, res) {
+        connection.query("SELECT employee_id AS EmployeeID, first_name AS FirstName, last_name AS LastName, title AS Title FROM employee", function (err, res) {
             if (err) throw err;
             console.table(res);
             start();
@@ -233,7 +235,6 @@ function addEmployee() {
 
     function updateEmployeeRole() {
         connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
-            console.log(res);
             connection.query("SELECT title, role_id FROM role", function (err, resRole) {
                 inquirer.
                     prompt([
@@ -256,13 +257,11 @@ function addEmployee() {
                             message: "What is the employee's new role?",
                             choices: function () {
                                 var choiceArray = [];
-                                console.log(resRole);
                                 for (var i = 0; i < resRole.length; i++) {
                                     var role = {
                                         name: resRole[i].title,
-                                        value: resRole[i].role_id
+                                        // value: resRole[i].role_id
                                     }
-                                    console.log(role);
                                     choiceArray.push(role);
 
                                 }
@@ -270,10 +269,9 @@ function addEmployee() {
                             }
                         }
                     ]).then(answer => {
-                        console.log(answer);
-                        connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [answer.employeeUpdateRole, answer.employeeList], function (err, res) {
+                        connection.query("UPDATE employee SET title = ? WHERE first_name = ?", [answer.employeeUpdateRole, answer.employeeList], function (err, res) {
                             if (err) throw err;
-                            console.table(res);
+                            console.log("\n" + answer.employeeList + " has been updated!" + "\n")
                             start();
                         })
 

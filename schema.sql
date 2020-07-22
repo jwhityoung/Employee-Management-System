@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS employee (
        employee_id INT NOT NULL,
     first_name varchar(30) NOT NULL,
     last_name varchar(30) NOT NULL,
-   role_id INT,  
+   title VARCHAR(30) NOT NULL,
 PRIMARY KEY(employee_id)
 );
 
@@ -35,13 +35,12 @@ VALUES ("HR"),
 
 INSERT INTO role (title, salary, department, role_id)
 VALUES ("Account Executive", 65000.00, "Sales", NULL),
-VALUES ("Implementation Manager", 70000.00, "Operations", NULL),
-VALUES ("HR Coordinator", 50000.00, "HR", NULL),
-VALUES ("Junior Software Developer", 75000.00, "Engineering", NULL);
+ ("Implementation Manager", 70000.00, "Operations", NULL),
+ ("HR Coordinator", 50000.00, "HR", NULL),
+ ("Junior Software Developer", 75000.00, "Engineering", NULL);
 
 
-INSERT INTO employee (employee_id, first_name, last_name, role_id)
-VALUES (48937, "Olivia", "Gambucci", NULL),
-VALUES (93827, "Will", "Williams", NULL),
-VALUES (28716, "Sara", "Smith", NULL),
-VALUES (73827, "Jane", "Doe", NULL);
+INSERT INTO employee (employee_id, first_name, last_name, title)
+VALUES (48937, "Olivia", "Gambucci", "Account Executive"),
+ (93827, "Will", "Williams", "Implementation Manager"),
+ (28716, "Sara", "Smith", "HR Coordinator")
